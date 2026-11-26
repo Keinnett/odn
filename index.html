@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asystent ODN – instalacja (v152)</title>
+<style>
+  :root { --g: #166534; --g2: #22c55e; --t: #0f172a; --s: #475569; --b: #e2e8f0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--t); background: #f8fafc; }
+  main { max-width: 860px; margin: 0 auto; padding: 28px 20px 60px; }
+  header { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+  header svg { flex: none; }
+  h1 { font-size: 26px; margin: 0; }
+  .sub { color: var(--s); margin: 0 0 22px; }
+  section { background: #fff; border: 1px solid var(--b); border-radius: 12px; padding: 18px 20px; margin: 16px 0; }
+  h2 { font-size: 18px; margin: 0 0 10px; }
+  ul.zasady { margin: 0; padding-left: 20px; } ul.zasady li { margin: 4px 0; }
+  .kroki { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .krok { border: 1px solid var(--b); border-radius: 10px; padding: 12px 14px; background: #f8fafc; }
+  .krok b.nr { display: inline-flex; width: 26px; height: 26px; border-radius: 50%; background: var(--g); color: #fff; align-items: center; justify-content: center; margin-right: 6px; }
+  .konf { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 6px 0 14px; }
+  label { font-size: 13px; color: var(--s); display: flex; flex-direction: column; gap: 4px; }
+  input, select, textarea { font: 15px system-ui, sans-serif; padding: 7px 9px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; color: var(--t); }
+  input.zle { border-color: #ef4444; background: #fef2f2; }
+  .kafel { display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 12px; background: var(--g); color: #fff; font-weight: bold; font-size: 16px; text-decoration: none; cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+  .kafel:active { cursor: grabbing; }
+  .kafel.wylaczony { background: #94a3b8; pointer-events: none; }
+  .podsum { font-size: 13px; color: var(--s); margin-top: 8px; }
+  .podsum code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; }
+  .formularz { display: grid; gap: 10px; max-width: 560px; }
+  button { font: bold 15px system-ui, sans-serif; padding: 9px 18px; border-radius: 8px; border: none; background: var(--g); color: #fff; cursor: pointer; justify-self: start; }
+  .info { font-size: 13px; color: var(--s); }
+  #stan { font-size: 14px; }
+  footer { text-align: center; color: #94a3b8; font-size: 12px; margin-top: 30px; }
+  @media (max-width: 640px) { .kroki, .konf { grid-template-columns: 1fr; } }
+</style></head>
+<body><main>
+  <header>
+    <svg width="44" height="44" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#14532d" stroke="#4ade80" stroke-width="1.4"/><path d="M12 19.5V9.5" stroke="#f8fafc" stroke-width="1.8" stroke-linecap="round"/><path d="M12 13c-4.2 0-5.8-2.6-5.8-5.3 3.2 0 5.8 1.6 5.8 5.3z" fill="#4ade80"/><path d="M12 11c3.6 0 5-2.3 5-4.6-2.8 0-5 1.4-5 4.6z" fill="#86efac"/></svg>
+    <div><h1>Asystent ODN</h1><p class="sub" style="margin:0;">Kreator szkiców odnowieniowych w SILP – wersja v152</p></div>
+  </header>
+
+  <section>
+    <h2>Czym jest Asystent ODN</h2>
+    <p style="margin-top:0;">Asystent prowadzi leśniczego przez szkic odnowieniowy w Szkicowniku SILP: odczytuje opis taksacyjny i PNSW, proponuje skład, pomaga rysować (podział powierzchni, kształty, biocenotyki, dół na sadzonki), pilnuje bilansu i wypełnia główkę szkicu.</p>
+    <h2>Zasady</h2>
+    <ul class="zasady">
+      <li>🔒 <b>Działa w 100% w Twojej przeglądarce.</b> Dane ze szkiców i z SILP nie są nigdzie wysyłane; jedyne, co asystent pobiera, to jego kod i słowniki z GitHuba.</li>
+      <li>🧭 Nie zmienia niczego w SILP bez Twojej akcji – rysuje i zapisuje tylko to, co zatwierdzisz.</li>
+      <li>🎓 Powstał w ramach pracy inżynierskiej. Do badania liczony jest wyłącznie lokalny czas planowania (eksport tylko ręcznie, bez wydzieleń, gatunków i powierzchni) – <b>nie do oceny Twoich szkiców</b>.</li>
+      <li>💾 Postęp zapisuje się w pamięci przeglądarki. Na komputerach, które czyszczą profil po wyłączeniu, ustawienia jednostki są w zakładce poniżej.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>1. Twoja jednostka</h2>
+    <div class="konf">
+      <label>RDLP<input id="rdlp" inputmode="numeric" maxlength="2" placeholder="np. 11"></label>
+      <label>Nadleśnictwo<input id="nadl" inputmode="numeric" maxlength="2" placeholder="np. 27"></label>
+      <label>Leśnictwo (obręb-leśnictwo)<input id="les" maxlength="6" placeholder="np. 1-04"></label>
+      <label>Rola<select id="rola"><option>leśniczy</option><option>podleśniczy</option><option>inna</option></select></label>
+    </div>
+    <div class="info">Jednostka zapisuje się w samej zakładce – po ponownym uruchomieniu komputera asystent od razu wie, z jakim leśnictwem pracujesz.</div>
+  </section>
+
+  <section>
+    <h2>2. Instalacja – 2 kroki</h2>
+    <div class="kroki">
+      <div class="krok"><b class="nr">1</b><b>Przeciągnij kafelek na pasek zakładek</b><br><span class="info">Pasek zakładek: Ctrl+Shift+B. Starą zakładkę asystenta usuń.</span>
+        <p style="margin:12px 0 0;"><a class="kafel" id="zakladka" href="#" title="Przeciągnij na pasek zakładek">🌱 Asystent ODN</a></p>
+        <div class="podsum" id="podsum"></div></div>
+      <div class="krok"><b class="nr">2</b><b>Kliknij zakładkę w SILP</b><br><span class="info">Otwórz Szkicownik (albo SILPweb) i kliknij zakładkę. Za pierwszym razem zezwól na wyskakujące okienko „nie zamykaj” – pilnuje asystenta po odświeżeniu strony.</span>
+        <p class="info" style="margin-top:12px;">Coś nie działa? <a href="#" id="test">ODN test</a> – przeciągnij i kliknij w SILP, pokaże, co strona może pobrać.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Jesteś specjalistą?</h2>
+    <p style="margin-top:0;">Możesz skonfigurować asystenta pod wytyczne planowania w Twoim nadleśnictwie (składy, normy, grupy czynności). Zostaw kontakt – odezwę się.</p>
+    <form class="formularz" id="kontakt">
+      <label>Twój e-mail<input type="email" id="k-mail" required placeholder="imie.nazwisko@lasy.gov.pl"></label>
+      <label>Wiadomość<textarea id="k-msg" rows="4" required placeholder="Nadleśnictwo, czego dotyczą wytyczne…"></textarea></label>
+      <button type="submit">Wyślij zgłoszenie</button>
+      <div id="stan"></div>
+    </form>
+  </section>
+  <footer>Asystent ODN v152 · praca inżynierska · kod na GitHubie (Keinnett/odn)</footer>
+</main>
+<script>
+  // ===== do podmiany przez autora =====
+  var WEBHOOK_URL = 'WEBHOOK_URL';            // adres webhooka (np. Formspree / Make / własny); dopóki to placeholder – formularz otwiera e-mail
+  var MAILTO = 'ADRES_EMAIL_AUTORA';          // adres awaryjny dla mailto:
+  // =====================================
+  var ZAKLADKA = "javascript:void(function(){var c=null;try{c=window.open('','silpKreatorSter_'+location.host.replace(/[^a-z0-9]/gi,'_'),'width=260,height=90,left='+(screen.availWidth-270)+',top='+(screen.availHeight-100));window.focus()}catch(e){}window.__silpCtl=c;var L=localStorage,R='Keinnett/odn',T='';try{R=L.getItem('silp_kreator_repo')||R;T=L.getItem('silp_kreator_ght')||''}catch(e){}var K='silp_kreator_gh';function run(t){(0,eval)(t)}function kopia(m){var t=null;try{t=L.getItem(K)}catch(e){}if(t)run(t);else alert('Asystent ODN: '+m)}function ok(t){if(t.indexOf('__silpLd')<0)throw 0;try{L.setItem(K,t)}catch(e){}run(t)}var Z=T?[['https://api.github.com/repos/'+R+'/contents/asystent.js?ref=main',{cache:'no-store',headers:{Authorization:'Bearer '+T,Accept:'application/vnd.github.raw'}}]]:[['https://raw.githubusercontent.com/'+R+'/main/asystent.js?v='+Math.floor(Date.now()/6e5),{cache:'no-store'}],['https://cdn.jsdelivr.net/gh/'+R+'@main/asystent.js',{}]];function proba(i){if(i>=Z.length)return kopia('nie moge pobrac kodu z GitHuba'+(T?' (sprawdz token - mogl wygasnac; usun go: localStorage silp_kreator_ght)':'')+' i nie ma kopii w przegladarce.');fetch(Z[i][0],Z[i][1]).then(function(r){if(r.status==401||r.status==404){}if(!r.ok)throw 0;return r.text()}).then(ok).catch(function(){proba(i+1)})}proba(0)}())", TEST = "javascript:void(function(){var w=[],q=[['GitHub raw','https://raw.githubusercontent.com/github/gitignore/main/README.md'],['jsDelivr','https://cdn.jsdelivr.net/gh/github/gitignore@main/README.md'],['Słowniki (odn)','https://raw.githubusercontent.com/Keinnett/odn/main/slowniki.json']];function f(i){if(i>=q.length)return g();fetch(q[i][1],{cache:'no-store'}).then(function(r){w.push(q[i][0]+' fetch: '+r.status)}).catch(function(e){w.push(q[i][0]+' fetch: BLOKADA ('+e.message+')')}).then(function(){f(i+1)})}function g(){var s=document.createElement('script'),t=setTimeout(function(){w.push('jsDelivr <script>: brak odpowiedzi');h()},8000);s.onload=function(){clearTimeout(t);w.push('jsDelivr <script>: OK');h()};s.onerror=function(){clearTimeout(t);w.push('jsDelivr <script>: BLOKADA');h()};s.src='https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js';document.head.appendChild(s)}function h(){try{localStorage.setItem('odn_test','1');w.push('pamiec przegladarki: OK ('+location.host+')')}catch(e){w.push('pamiec przegladarki: BLOKADA')}w.push('ramka: '+(window!==window.top?'tak':'nie')+', DecompressionStream: '+!!window.DecompressionStream+', crypto: '+!!(window.crypto&&crypto.subtle));var m=document.querySelector('meta[http-equiv=Content-Security-Policy]');w.push('CSP meta: '+(m?m.content.slice(0,120):'brak'));var x='Asystent ODN - test polaczen ('+new Date().toLocaleString()+'):\\n'+w.join('\\n');try{navigator.clipboard.writeText(x).catch(function(){})}catch(e){}alert(x+'\\n\\n(skopiowano do schowka - wklej mi to)')}f(0)}())";
+  var $ = function (id) { return document.getElementById(id); };
+  var KL = 'odn_instalacja_konf';
+  try { var z = JSON.parse(localStorage.getItem(KL) || '{}'); ['rdlp', 'nadl', 'les', 'rola'].forEach(function (k) { if (z[k]) $(k).value = z[k]; }); } catch (e) {}
+  function cfg() {
+    var r = $('rdlp').value.trim(), n = $('nadl').value.trim(), l = $('les').value.trim().replace(/\s+/g, ''), rola = $('rola').value;
+    var okR = /^\d{1,2}$/.test(r), okN = /^\d{1,2}$/.test(n), okL = /^\d{1,2}-\d{1,2}$/.test(l);
+    $('rdlp').classList.toggle('zle', !!r && !okR); $('nadl').classList.toggle('zle', !!n && !okN); $('les').classList.toggle('zle', !!l && !okL);
+    var p2 = function (x) { return ('0' + x).slice(-2); }, c = { rola: rola };
+    if (okR) c.rdlp = p2(r);
+    if (okR && okN) c.nadl = p2(r) + '-' + p2(n);
+    if (okR && okN && okL) { var q = l.split('-'); c.les = c.nadl + '-' + (+q[0]) + '-' + p2(q[1]); }
+    return c;
+  }
+  function odswiez() {
+    var c = cfg();
+    try { localStorage.setItem(KL, JSON.stringify({ rdlp: $('rdlp').value, nadl: $('nadl').value, les: $('les').value, rola: $('rola').value })); } catch (e) {}
+    $('zakladka').href = 'javascript:window.__ODN_CFG=' + JSON.stringify(c) + ';' + ZAKLADKA.replace(/^javascript:/, '');
+    $('podsum').innerHTML = c.les ? 'W zakładce: leśnictwo <code>' + c.les + '</code>, rola <code>' + c.rola + '</code>' : (c.nadl ? 'W zakładce: nadleśnictwo <code>' + c.nadl + '</code> (leśnictwo wybierzesz w asystencie)' : 'Bez jednostki – asystent zapyta o nią przy pierwszym uruchomieniu.');
+  }
+  ['rdlp', 'nadl', 'les', 'rola'].forEach(function (k) { $(k).addEventListener('input', odswiez); $(k).addEventListener('change', odswiez); });
+  $('test').href = TEST; odswiez();
+  $('kontakt').addEventListener('submit', function (e) {
+    e.preventDefault(); var mail = $('k-mail').value.trim(), msg = $('k-msg').value.trim(), c = cfg();
+    var tekst = 'Zgłoszenie specjalisty – Asystent ODN\nE-mail: ' + mail + '\nJednostka: ' + (c.les || c.nadl || '–') + '\n\n' + msg;
+    var mailto = function () { location.href = 'mailto:' + MAILTO + '?subject=' + encodeURIComponent('Asystent ODN – konfiguracja nadleśnictwa') + '&body=' + encodeURIComponent(tekst); $('stan').textContent = '✉ Otwieram program pocztowy…'; };
+    if (/^https:\/\//.test(WEBHOOK_URL)) {
+      $('stan').textContent = '⏳ Wysyłam…';
+      fetch(WEBHOOK_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: mail, wiadomosc: msg, jednostka: c.les || c.nadl || '', zrodlo: 'strona instalacyjna Asystenta ODN' }) })
+        .then(function (r) { if (!r.ok) throw 0; $('stan').textContent = '✅ Dziękuję – zgłoszenie wysłane.'; $('kontakt').reset(); })
+        .catch(function () { $('stan').textContent = '⚠ Nie udało się wysłać – otwieram e-mail.'; mailto(); });
+    } else mailto();
+  });
+</script>
+</body></html>
